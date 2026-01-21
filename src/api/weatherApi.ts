@@ -48,7 +48,7 @@ export const saveAmapConfig = (config: AmapConfig) => {
   localStorage.setItem(AMAP_STORAGE_KEY, JSON.stringify(config));
 };
 
-const parseLive = (raw: any, city: string): { current: CurrentWeather; updatedAt: string } => {
+const parseLive = (raw: any): { current: CurrentWeather; updatedAt: string } => {
   if (raw?.status !== "1") {
     throw new Error(raw?.info ?? "高德实时天气接口返回异常");
   }
@@ -135,7 +135,7 @@ export const fetchWeather = async (cityName: string): Promise<WeatherResult> => 
   const liveData = await liveRes.json();
   const forecastData = await forecastRes.json();
 
-  const { current, updatedAt } = parseLive(liveData, city);
+  const { current, updatedAt } = parseLive(liveData);
   const forecast = parseForecast(forecastData);
 
   return {
