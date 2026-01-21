@@ -1,0 +1,9 @@
+node_modules
+.dist
+/dist
+.vscode/
+.env
+.env.*
+!.env.prod
+.DS_Store
+.vite
