@@ -18,7 +18,7 @@
 ## 项目实现说明
 - 前端：Vue 3 + TypeScript + Vite
 - 状态管理：Pinia
-- 天气接口：高德天气（通过 VITE_AMAP_KEY）
+- 天气接口：高德天气（支持 VITE_AMAP_KEY 或页面内配置）
 - AI 建议：
   - 默认走本地配置的 OpenAI 兼容接口
   - 未配置时返回内置建议
@@ -43,13 +43,14 @@ VITE_AMAP_KEY=你的高德Key
 # VITE_PROXY_AI_TARGET=https://your-ai-api.example.com
 ```
 
-## AI 接口设置（页面内）
+## 页面内设置（AI / 高德 Key）
 页面右上角点击“AI 设置”，填写并保存：
+- 高德地图 API Key：你的高德 Web 服务 Key
 - Base URL：OpenAI 兼容地址（例如以 `/v1` 结尾的地址）
 - API Key：你的密钥
 - Model：模型名（如不填会使用环境变量或默认值）
 
-保存后会存储在 `localStorage`，优先级高于环境变量。
+保存后会存储在 `localStorage`，优先级高于环境变量（高德 Key 同理）。
 
 ## 部署说明
 1. 生产构建
@@ -63,5 +64,5 @@ VITE_AMAP_KEY=你的高德Key
 	  - `/api/ai-suggest` 代理到你的 AI 服务
 
 ## 常见问题
-- 未配置 `VITE_AMAP_KEY` 且关闭代理时会无法获取天气。
+- 未配置高德 Key 且关闭代理时会无法获取天气。
 - 未配置 AI 接口时会返回系统内置建议。

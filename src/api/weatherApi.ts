@@ -22,6 +22,32 @@ export interface WeatherResult {
   updatedAt: string;
 }
 
+export interface AmapConfig {
+  amapKey: string;
+}
+
+const AMAP_STORAGE_KEY = "weather-amap-config";
+
+export const loadAmapConfig = (): AmapConfig | null => {
+  try {
+    const raw = localStorage.getItem(AMAP_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw) as AmapConfig;
+    if (!parsed.amapKey) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+export const saveAmapConfig = (config: AmapConfig) => {
+  localStorage.setItem(AMAP_STORAGE_KEY, JSON.stringify(config));
+};
+
 const parseLive = (raw: any, city: string): { current: CurrentWeather; updatedAt: string } => {
   if (raw?.status !== "1") {
     throw new Error(raw?.info ?? "高德实时天气接口返回异常");
@@ -75,7 +101,8 @@ const buildAmapUrl = (city: string, extensions: "base" | "all", key?: string) =>
 
 export const fetchWeather = async (cityName: string): Promise<WeatherResult> => {
   const useProxy = import.meta.env.VITE_USE_PROXY === "true";
-  const amapKey = import.meta.env.VITE_AMAP_KEY as string | undefined;
+  const storedAmapKey = loadAmapConfig()?.amapKey;
+  const amapKey = storedAmapKey || (import.meta.env.VITE_AMAP_KEY as string | undefined);
 
   if (!useProxy && !amapKey) {
     throw new Error("未配置高德地图 Key，请设置 VITE_AMAP_KEY");

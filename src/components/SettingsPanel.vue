@@ -6,6 +6,9 @@
     </div>
 
     <div class="form">
+      <label class="label">高德地图 API Key</label>
+      <input v-model="form.amapKey" class="input" placeholder="你的高德 Web 服务 Key" />
+
       <label class="label">AI API 地址</label>
       <input v-model="form.baseUrl" class="input" placeholder="https://api.example.com/v1/chat/completions" />
 
@@ -20,7 +23,7 @@
         <button class="btn ghost" @click="clear">清除</button>
       </div>
 
-      <small class="muted">如未配置，将使用系统自带建议。兼容 OpenAI 风格 /v1/chat/completions。</small>
+      <small class="muted">高德 Key 优先于环境变量。AI 未配置时将使用系统自带建议，兼容 OpenAI 风格 /v1/chat/completions。</small>
     </div>
   </section>
 </template>
@@ -28,29 +31,37 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { loadAiConfig, saveAiConfig, type AiConfig } from "../api/aiApi.ts";
+import { loadAmapConfig, saveAmapConfig } from "../api/weatherApi";
 
 const emit = defineEmits<{ saved: [] }>();
 
 const initial = loadAiConfig();
-const form = reactive<AiConfig>({
+const amapInitial = loadAmapConfig();
+const form = reactive<AiConfig & { amapKey: string }>({
   baseUrl: initial?.baseUrl ?? "",
   apiKey: initial?.apiKey ?? "",
-  model: initial?.model ?? ""
+  model: initial?.model ?? "",
+  amapKey: amapInitial?.amapKey ?? ""
 });
 
 const save = () => {
-  if (!form.baseUrl || !form.apiKey) {
-    return;
+  if (form.baseUrl && form.apiKey) {
+    saveAiConfig({ baseUrl: form.baseUrl, apiKey: form.apiKey, model: form.model });
+  } else if (!form.baseUrl && !form.apiKey && !form.model) {
+    saveAiConfig({ baseUrl: "", apiKey: "", model: "" });
   }
-  saveAiConfig({ ...form });
+
+  saveAmapConfig({ amapKey: form.amapKey.trim() });
   emit("saved");
 };
 
 const clear = () => {
   saveAiConfig({ baseUrl: "", apiKey: "", model: "" });
+  saveAmapConfig({ amapKey: "" });
   form.baseUrl = "";
   form.apiKey = "";
   form.model = "";
+  form.amapKey = "";
   emit("saved");
 };
 </script>
