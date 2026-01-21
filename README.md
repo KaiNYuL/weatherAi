@@ -8,11 +8,27 @@
 - 城市筛选、主题随天气变化
 
 ## 本地开发
-1. 安装依赖
-	- `npm install`
-2. 启动开发服务
-	- `npm run dev`
-3. 访问
+1. 克隆项目
+	```
+	git clone https://github.com/KaiNYuL/weatherAi.git
+	cd weatherAi
+	```
+2. 安装依赖
+	```
+	npm install
+	```
+3. 配置环境变量（可选）
+	- 复制一份配置文件并填写：
+	```
+	# Windows PowerShell
+	Copy-Item .env .env.local
+	```
+	- 在 `.env.local` 中填入高德 Key（或在页面内设置）
+4. 启动开发服务
+	```
+	npm run dev
+	```
+5. 访问
 	- http://localhost:5173/
 
 ## 项目实现说明
@@ -53,15 +69,28 @@ VITE_AMAP_KEY=你的高德Key
 保存后会存储在 `localStorage`，优先级高于环境变量（高德 Key 同理）。
 
 ## 部署说明
+### 方式一：本地打包后部署静态站点
 1. 生产构建
-	- `npm run build`
+	```
+	npm run build
+	```
 2. 产物目录
 	- `dist/`
-3. 部署方式
-	- 直接将 `dist/` 作为静态站点部署
-	- 若需要规避 CORS，请在生产环境配置反向代理，将：
-	  - `/api/weather` 代理到 `https://restapi.amap.com/v3/weather/weatherInfo`
-	  - `/api/ai-suggest` 代理到你的 AI 服务
+3. 将 `dist/` 上传到任意静态托管（OSS/COS/对象存储/CDN）
+
+### 方式二：Vercel（海外）
+1. 将仓库导入 Vercel
+2. Build Command：`npm run build`
+3. Output Directory：`dist`
+4. 设置环境变量：
+	- `VITE_USE_PROXY=true`
+	- `VITE_AMAP_KEY=你的高德Key`
+	- 可选：`VITE_AI_API_BASE`、`VITE_AI_MODEL`
+
+### 方式三：国内静态托管（推荐国内访问）
+1. 使用方式一打包 `dist/`
+2. 上传到国内对象存储（阿里云 OSS / 腾讯云 COS）
+3. 开启静态网站托管并绑定自定义域名
 
 ## 常见问题
 - 未配置高德 Key 且关闭代理时会无法获取天气。
