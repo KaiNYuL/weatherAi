@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/weather",
+      "destination": "https://restapi.amap.com/v3/weather/weatherInfo"
+    },
+    {
+      "source": "/api/weather/:path*",
+      "destination": "https://restapi.amap.com/v3/weather/weatherInfo"
+    }
+  ]
+}
