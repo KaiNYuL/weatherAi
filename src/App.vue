@@ -4,7 +4,7 @@
       <div>
         <p class="eyebrow">Weather & AI Suggest</p>
         <h1>全国城市实时 / 未来3天天气 + AI穿搭/出行建议</h1>
-        <p class="sub">轻量、快速、可一键部署到 Vercel。</p>
+        <p class="sub">轻量、快速、的出行建议。</p>
       </div>
       <div class="hero-actions">
         <CitySelector v-model="inputCity" @search="onSearch" />
