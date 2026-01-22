@@ -93,6 +93,28 @@ const filterLabels: Record<AdviceFilterKey, string> = {
   tips: "小提示"
 };
 
+const filterAdviceLines = (text: string, filters: AdviceFilterKey[]) => {
+  const allowed = new Set(filters);
+  const blockedLabels = (Object.keys(filterLabels) as AdviceFilterKey[])
+    .filter((key) => !allowed.has(key))
+    .map((key) => filterLabels[key]);
+
+  if (!blockedLabels.length) {
+    return text;
+  }
+
+  return text
+    .split("\n")
+    .filter((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        return false;
+      }
+      return !blockedLabels.some((label) => trimmed.startsWith(`${label}：`) || trimmed.startsWith(`${label}:`) || trimmed.includes(label));
+    })
+    .join("\n");
+};
+
 const buildPrompt = (
   city: string,
   current: CurrentWeather | null,
@@ -112,6 +134,7 @@ const buildPrompt = (
     `自然风光关键词：${profile.nature.join("、")}`,
     `城市气质：${profile.vibe}`,
     `仅回答以下部分：${filterText}。`,
+    "严格只输出已勾选项，未勾选项一律不出现（包括文字和变体）。",
     "要求：若包含【活动/出行】，根据未来3天天气给出三日行程。",
     "每一天包含：上午/下午/夜间安排 + 景点/场所 + 交通方式(地铁/步行/打车)。",
     "优先匹配天气：雨/雪以室内为主，晴/多云适当户外。",
@@ -243,12 +266,15 @@ export const fetchAIAdvice = async (
     const data = await response.json();
     if (isCustomAi) {
       const content = data?.choices?.[0]?.message?.content;
-      return content ?? fallbackWithNotice(city, current, forecast, filters);
+      const safe = content ?? fallbackWithNotice(city, current, forecast, filters);
+      return filterAdviceLines(safe, filters);
     }
-    return data?.advice ?? localAdvice(city, current, forecast, filters);
+    const safe = data?.advice ?? localAdvice(city, current, forecast, filters);
+    return filterAdviceLines(safe, filters);
   } catch (error) {
-    return config?.baseUrl
+    const safe = config?.baseUrl
       ? `AI调用失败，已返回系统自带建议：\n${localAdvice(city, current, forecast, filters)}`
       : fallbackWithNotice(city, current, forecast, filters);
+    return filterAdviceLines(safe, filters);
   }
 };

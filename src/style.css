@@ -207,6 +207,7 @@ small.muted {
   cursor: pointer;
   font-size: 12px;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
 }
 
 .ghost-btn.primary {
@@ -215,13 +216,9 @@ small.muted {
   border-color: var(--accent);
 }
 
-.ghost-btn.primary.soft-press {
-  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.25);
-}
-
-.ghost-btn.primary.soft-press:active {
+.ghost-btn:active {
   transform: translateY(1px) scale(0.98);
-  box-shadow: 0 3px 10px rgba(14, 165, 233, 0.18);
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12);
 }
 
 .ghost-btn.primary.success {
@@ -258,6 +255,46 @@ small.muted {
 .ai-stack {
   display: grid;
   gap: 16px;
+}
+
+.btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12);
+}
+
+.loading-block {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.loading-text {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(148, 163, 184, 0.4);
+  border-top-color: var(--accent);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .drawer {

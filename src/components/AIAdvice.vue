@@ -5,7 +5,10 @@
       <span class="badge">AI Suggest</span>
     </div>
 
-    <p v-if="loading" class="loading">AI 正在整理建议...</p>
+    <div v-if="loading" class="loading-block">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">AI 正在整理建议...</p>
+    </div>
     <p v-else-if="error" class="error">{{ error }}</p>
 
     <div v-else class="content">

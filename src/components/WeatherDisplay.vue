@@ -5,7 +5,10 @@
       <span class="badge">{{ city }}</span>
     </div>
 
-    <p v-if="loading" class="loading">正在获取天气数据...</p>
+    <div v-if="loading" class="loading-block">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">正在获取天气数据...</p>
+    </div>
     <p v-else-if="error" class="error">{{ error }}</p>
 
     <template v-else>
