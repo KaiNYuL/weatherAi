@@ -13,6 +13,16 @@
     </header>
 
     <AdviceFilter v-model="selectedFilters" />
+    <div class="action-row">
+      <button
+        class="ghost-btn primary"
+        :disabled="store.aiLoading"
+        @click="generateAdvice"
+      >
+        生成建议
+      </button>
+      <small class="muted">点击后才会消耗 AI token</small>
+    </div>
 
     <main class="grid">
       <WeatherDisplay
@@ -37,7 +47,7 @@
           <strong>AI 接口设置</strong>
           <button class="ghost-btn" @click="isSettingsOpen = false">关闭</button>
         </div>
-        <SettingsPanel @saved="refreshAdvice" />
+        <SettingsPanel @saved="onSettingsSaved" />
       </div>
     </div>
   </div>
@@ -78,21 +88,27 @@ const themeClass = computed(() => {
   return "theme-default";
 });
 
-const refreshAll = async () => {
+const refreshWeather = async () => {
   await store.fetchWeather(activeCity.value);
-  await store.fetchAdvice(activeCity.value, selectedFilters.value);
-};
-
-const refreshAdvice = async () => {
-  await store.fetchAdvice(activeCity.value, selectedFilters.value);
 };
 
 const onSearch = async () => {
   activeCity.value = inputCity.value.trim() || "北京";
-  await refreshAll();
+  await refreshWeather();
+};
+
+const generateAdvice = async () => {
+  if (!store.current && !store.loading) {
+    await refreshWeather();
+  }
+  await store.fetchAdvice(activeCity.value, selectedFilters.value);
+};
+
+const onSettingsSaved = () => {
+  isSettingsOpen.value = false;
 };
 
 onMounted(async () => {
-  await refreshAll();
+  await refreshWeather();
 });
 </script>
