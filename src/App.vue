@@ -13,16 +13,6 @@
     </header>
 
     <AdviceFilter v-model="selectedFilters" />
-    <div class="action-row">
-      <button
-        class="ghost-btn primary"
-        :disabled="store.aiLoading"
-        @click="generateAdvice"
-      >
-        生成建议
-      </button>
-      <small class="muted">点击后才会消耗 AI token</small>
-    </div>
 
     <main class="grid">
       <WeatherDisplay
@@ -33,11 +23,24 @@
         :error="store.error"
         :updated-at="store.updatedAt"
       />
-      <AIAdvice
-        :loading="store.aiLoading"
-        :advice="store.aiAdvice"
-        :error="store.aiError"
-      />
+      <div class="ai-stack">
+        <div class="action-row">
+          <button
+            class="ghost-btn primary soft-press"
+            :class="{ success: adviceSuccess }"
+            :disabled="store.aiLoading"
+            @click="generateAdvice"
+          >
+            生成建议
+          </button>
+          <small class="muted">点击后才会消耗 AI token</small>
+        </div>
+        <AIAdvice
+          :loading="store.aiLoading"
+          :advice="store.aiAdvice"
+          :error="store.aiError"
+        />
+      </div>
     </main>
 
     <div class="drawer" :class="{ open: isSettingsOpen }">
@@ -97,11 +100,17 @@ const onSearch = async () => {
   await refreshWeather();
 };
 
+const adviceSuccess = ref(false);
+
 const generateAdvice = async () => {
   if (!store.current && !store.loading) {
     await refreshWeather();
   }
   await store.fetchAdvice(activeCity.value, selectedFilters.value);
+  adviceSuccess.value = true;
+  setTimeout(() => {
+    adviceSuccess.value = false;
+  }, 1200);
 };
 
 const onSettingsSaved = () => {
