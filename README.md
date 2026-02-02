@@ -97,6 +97,7 @@ VITE_AMAP_KEY=你的高德Key
 1. 使用方式一打包 `dist/`
 2. 上传到国内对象存储（阿里云 OSS / 腾讯云 COS）
 3. 开启静态网站托管并绑定自定义域名
+4. 目前本项目已部署在如下域名，国内使用edge或chrome访问：https://kainyul.dpdns.org/
 
 ## 常见问题
 - 未配置高德 Key 且关闭代理时会无法获取天气。
